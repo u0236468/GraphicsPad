@@ -15,7 +15,7 @@ Original Code by Jamie King
 #include <fstream>
 #include <QtGui\qmouseevent>
 #include <QtGui\qkeyevent>
-//#include "Camera.h"
+#include "Camera.h"
 
 using namespace std;
 using glm::vec3;
@@ -27,7 +27,7 @@ using glm::mat4;
 //const uint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 GLuint programID;
 //GLuint planeNumIndices;
-//Camera camera;
+Camera camera;
 //GLuint passThroughProgramID;
 
 //using std::cout;
@@ -293,7 +293,7 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 15.0f); //changed 100.0f to 1|||||5.0f
 
 	//glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
-	glm::mat4 modelToProjectionMatrix = perspective * worldToView * modelToWorld; //modelToWorld * worldToView * perspective;
+	glm::mat4 modelToProjectionMatrix = perspective * camera.getWorldToViewMatrix() * modelToWorld; //modelToWorld * worldToView * perspective;
 		
 		/*glm::lookAt(
 		glm::vec3(0.0f, 1.0f, 0.0f),
@@ -308,7 +308,7 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 
 	GLint ambientLightUniformLocation = glGetUniformLocation(programID, "ambientLight");
-	glm::vec4 ambientLight(0.9f, 0.5f, 0.5f, 1.0f);
+	glm::vec4 ambientLight(1.0f, 0.0f, 0.0f, 1.0f);
 	glUniform3fv(ambientLightUniformLocation, 1, &ambientLight[0]);
 
 	GLint lightPositionUniformLocation = glGetUniformLocation(programID, "lightPosition");
@@ -378,7 +378,7 @@ void MeOpenGl::paintGL()
 
 }
 
-/*void MeOpenGl::mouseMoveEvent(QMouseEvent* e)
+void MeOpenGl::mouseMoveEvent(QMouseEvent* e)
 {
 	camera.mouseUpdate(glm::vec2(e->x(), e->y()));
 	repaint();
@@ -408,4 +408,4 @@ void MeOpenGl::keyPressEvent(QKeyEvent* e)
 		break;
 	}
 	repaint();
-}*/
+}

@@ -23,8 +23,8 @@ class MeOpenGl : public QGLWidget
 protected:
 	void initializeGL();
 	void paintGL();
-	//void mouseMoveEvent(QMouseEvent*);
-	//void keyPressEvent(QKeyEvent*);
+	void mouseMoveEvent(QMouseEvent*);
+	void keyPressEvent(QKeyEvent*);
 public:
 	MeOpenGl() {}
 private slots:

@@ -4,7 +4,7 @@ out vec4 daColor;
 in vec3 normalWorld;
 in vec3 vertexPositionWorld;
 
-uniform vec3 lightPosition;
+uniform vec3 lightPosition43;
 uniform vec4 ambientLight;
 
 void main()
