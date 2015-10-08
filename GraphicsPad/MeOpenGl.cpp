@@ -295,10 +295,12 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	//glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
 	glm::mat4 modelToProjectionMatrix = perspective * worldToView * modelToWorld; //modelToWorld * worldToView * perspective;
 		
-		/* glm::lookAt(
+		/*glm::lookAt(
 		glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, -1.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));*/
+
+	//hello
 
 	//GLint location = glGetUniformLocation(programID, "modelToProjectionMatrix");
 
