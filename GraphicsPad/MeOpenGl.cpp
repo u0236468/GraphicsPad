@@ -306,11 +306,11 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	
 	rotationAmount += 1.0f;
 	//glm::mat4 modelToWorld = glm::scale(0.5f, 1.0f, 1.0f) * 
-	glm::mat4 rotate = glm::rotate(45.0f, //angle
+	glm::mat4 rotate = glm::rotate(0.0f, //angle
 									1.0f, //x axis
 									0.0f, //y axis set to 1 if you want to rotation on this axis
 									0.0f) * //z axis
-		glm::rotate(45.0f, 0.0f, 1.0f, 0.0f);//(rotationAmount, 1.0f, 0.0f, 0.0f) * glm::rotate(rotationAmount, 0.0f, 1.0f, 0.0f);
+		glm::rotate(0.0f, 0.0f, 1.0f, 0.0f);//(rotationAmount, 1.0f, 0.0f, 0.0f) * glm::rotate(rotationAmount, 0.0f, 1.0f, 0.0f);
 	
 	glm::mat4 modelToWorld = translate * rotate;
 
@@ -319,14 +319,14 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 		glm::vec3(0.0f, 0.0f, -5.0f), //Center
 		glm::vec3(0.0f, 1.0f, 0.0f)); //Up direction*/
 	glm::mat4 worldToView = glm::lookAt(
-		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f), 
 		glm::vec3(0.0f, 1.0f, -1.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 15.0f); //changed 100.0f to 1|||||5.0f
 
 	//glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
-	glm::mat4 modelToProjectionMatrix = perspective * camera.getWorldToViewMatrix();// *modelToWorld; //modelToWorld * worldToView * perspective;
+	glm::mat4 modelToProjectionMatrix = perspective * camera.getWorldToViewMatrix() *modelToWorld * worldToView;// *worldToView * perspective;
 		
 		/*glm::lookAt(
 		glm::vec3(0.0f, 1.0f, 0.0f),
@@ -347,7 +347,7 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glUniform3fv(eyePositionWorldUniformLocation, 1, &eyePosition[0]);
 
 	GLint lightPositionUniformLocation = glGetUniformLocation(programID, "lightPosition");
-	glm::vec3 lightPosition(0.0f, 1.0, 0.0f);
+	glm::vec3 lightPosition(0.0f, 0.3, 0.0f);
 	glUniform3fv(lightPositionUniformLocation, 1, &lightPosition[0]);
 
 	//glm::mat4 translate = glm::translate(0.0f, 0.0f, -5.0f);
