@@ -26,7 +26,9 @@ using glm::mat4;
 //const uint NUM_FLOATS_PER_VERTICE = 9;
 //const uint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 GLuint programID;
-//GLuint planeNumIndices;
+GLuint planeNumIndices;
+GLuint sphereNumIndices;
+GLuint torusNumIndices;
 Camera camera;
 //GLuint passThroughProgramID;
 
@@ -35,7 +37,7 @@ Camera camera;
 //extern const char* vertexShaderCode;
 //extern const char* fragmentShaderCode;
 
-void MeOpenGl::loadData()
+void MeOpenGl::loadDataPlane()
 {
 	ShapeData plane = ShapeGenerator::makePlane(10);
 
@@ -160,8 +162,39 @@ void MeOpenGl::loadData()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 
+		sizeof(Vertex), //Stride
+		(void*)(7 * sizeof(float)));//offset
+
 	numIndices = plane.numIndices;
 	plane.cleanup();
+
+	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
+	myTimer.start(100);
+};
+
+void MeOpenGl::loadDataSphere()
+{
+	ShapeData sphere = ShapeGenerator::makePlane(10);
+
+	
+
+	glGenBuffers(1, &vertexBufferID);
+	glGenBuffers(1, &indexBufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	
+	glBufferData(GL_ARRAY_BUFFER, sphere.vertexBufferSize(), sphere.verts, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.indexBufferSize(), sphere.indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	numIndices = sphere.numIndices;
+	sphere.cleanup();
 
 	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
 	myTimer.start(100);
@@ -308,8 +341,12 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 
 	GLint ambientLightUniformLocation = glGetUniformLocation(programID, "ambientLight");
-	glm::vec4 ambientLight(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 ambientLight(0.5f, 0.5f, 0.5f, 1.0f);
 	glUniform3fv(ambientLightUniformLocation, 1, &ambientLight[0]);
+
+	GLint eyePositionWorldUniformLocation = glGetUniformLocation(programID, "eyePositionWorld");
+	glm::vec3 eyePosition = camera.position;
+	glUniform3fv(eyePositionWorldUniformLocation, 1, &eyePosition[0]);
 
 	GLint lightPositionUniformLocation = glGetUniformLocation(programID, "lightPosition");
 	glm::vec3 lightPosition(0.0f, 1.0f, 0.0f);
@@ -347,7 +384,8 @@ void MeOpenGl::initializeGL()
 	if (errorCode != GLEW_OK)
 		return;
 	installShaders();
-	loadData();
+	loadDataPlane();
+	loadDataSphere();
 	//sendDownUniform();
 
 	glEnable(GL_DEPTH_TEST);

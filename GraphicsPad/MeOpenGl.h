@@ -16,7 +16,8 @@ class MeOpenGl : public QGLWidget
 
 	QTimer myTimer;
 
-	void loadData();
+	void loadDataPlane();
+	void loadDataSphere();
 	void installShaders();
 	void sendDownUniform(float rotationAmount);
 

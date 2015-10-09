@@ -3,13 +3,16 @@
 
 class Camera
 {
+public:
 	glm::vec3 position;
 	glm::vec3 viewDirection;
 	const glm::vec3 UP;
 	glm::vec2 oldMousePosition;
+	//glm::vec3 getPosition();
 	//static float const MOVEMENT_SPEED;
-public:
+
 	Camera();
+	//glm::vec3 getPosition();
 	void mouseUpdate(const glm::vec2& newMousePosition);
 	glm::mat4 getWorldToViewMatrix() const;
 

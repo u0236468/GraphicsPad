@@ -4,14 +4,26 @@ out vec4 daColor;
 in vec3 normalWorld;
 in vec3 vertexPositionWorld;
 
-uniform vec3 lightPosition43;
+uniform vec3 lightPosition;
+uniform vec3 eyePositionWorld;
 uniform vec4 ambientLight;
 
 void main()
 {
 	vec3 lightVectorWorld = normalize(lightPosition - vertexPositionWorld);
 	float brightness = dot(lightVectorWorld, normalWorld);
+	vec4 diffuseLight = vec4(brightness, brightness, brightness, 1);
 
+	//Specular
+	vec3 reflectedLightVectorWorld = reflect(-lightVectorWorld, normalWorld);
+	vec3 eyeVectorWorld = normalize(eyePositionWorld - vertexPositionWorld);
+	float s = dot(reflectedLightVectorWorld, eyeVectorWorld);
+	vec4 specularLight = vec4(s, s, s, 1);
+	s = pow(s,8);
 
-	daColor = vec4(brightness, brightness, brightness, 1.0); //channels and 1 for alpha(no transparency) 
+	daColor = ambientLight + 
+		clamp(diffuseLight, 0, 1) + //clamp just limits it between 1-0 so the angle is not more than 90 so it doens't go negative and goes black
+		clamp(specularLight, 0, 1);
+	//daColor = clamp(specularLight, 0, 1);
+	//before specular -> daColor = vec4(brightness, brightness, brightness, 1.0); //channels and 1 for alpha(no transparency) 
 };

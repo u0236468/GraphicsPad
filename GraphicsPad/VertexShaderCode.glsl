@@ -2,7 +2,7 @@
 
 in layout(location=0) vec3 vertexPositionModel; //varrying data
 in layout(location=1) vec4 vertexColor; //vec4 vertexColor; //varrying data 
-//in layout(location=2) vec3 normalModel;
+in layout(location=2) vec3 normalModel;
 
 
 uniform mat4 modelToProjectionMatrix; //uniform means the value will be the same for every single vertex

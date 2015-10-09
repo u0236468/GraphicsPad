@@ -4,9 +4,9 @@
 const float MOVEMENT_SPEED = 0.1f;
 
 Camera::Camera() : viewDirection(0.0f, 0.0f, -1.0f), UP(0.0f, 1.0f, 0.0f)
-{
-	
+{	
 }
+
 
 void Camera::mouseUpdate(const glm::vec2& newMousePosition)
 {
