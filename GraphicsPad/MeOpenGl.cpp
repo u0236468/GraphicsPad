@@ -302,7 +302,7 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 {
 	GLuint uniformLocation = glGetUniformLocation(programID, "modelToProjectionMatrix");
 
-	glm::mat4 translate = glm::translate(0.0f, 0.0f, -5.0f);
+	glm::mat4 translate = glm::translate(0.0f, 0.0f, 0.0f);
 	
 	rotationAmount += 1.0f;
 	//glm::mat4 modelToWorld = glm::scale(0.5f, 1.0f, 1.0f) * 
@@ -326,14 +326,12 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 15.0f); //changed 100.0f to 1|||||5.0f
 
 	//glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
-	glm::mat4 modelToProjectionMatrix = perspective * camera.getWorldToViewMatrix() * modelToWorld; //modelToWorld * worldToView * perspective;
+	glm::mat4 modelToProjectionMatrix = perspective * camera.getWorldToViewMatrix();// *modelToWorld; //modelToWorld * worldToView * perspective;
 		
 		/*glm::lookAt(
 		glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, -1.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));*/
-
-	//hello
 
 	//GLint location = glGetUniformLocation(programID, "modelToProjectionMatrix");
 
@@ -341,15 +339,15 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 
 	GLint ambientLightUniformLocation = glGetUniformLocation(programID, "ambientLight");
-	glm::vec4 ambientLight(0.5f, 0.5f, 0.5f, 1.0f);
-	glUniform3fv(ambientLightUniformLocation, 1, &ambientLight[0]);
+	glm::vec4 ambientLight(0.2f, 0.2f, 0.2f, 1.0f);
+	glUniform4fv(ambientLightUniformLocation, 1, &ambientLight[0]);
 
 	GLint eyePositionWorldUniformLocation = glGetUniformLocation(programID, "eyePositionWorld");
 	glm::vec3 eyePosition = camera.position;
 	glUniform3fv(eyePositionWorldUniformLocation, 1, &eyePosition[0]);
 
 	GLint lightPositionUniformLocation = glGetUniformLocation(programID, "lightPosition");
-	glm::vec3 lightPosition(0.0f, 1.0f, 0.0f);
+	glm::vec3 lightPosition(0.0f, 1.0, 0.0f);
 	glUniform3fv(lightPositionUniformLocation, 1, &lightPosition[0]);
 
 	//glm::mat4 translate = glm::translate(0.0f, 0.0f, -5.0f);
