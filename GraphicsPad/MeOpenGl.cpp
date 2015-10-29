@@ -40,7 +40,7 @@ Camera camera;
 void MeOpenGl::loadDataPlane()
 {
 	//ShapeData plane = ShapeGenerator::makePlane(10);
-	ShapeData shape = ShapeGenerator::makeTorus(50);
+	//ShapeData shape = ShapeGenerator::makeTorus(50);
 
 	/*
 	float verts[] =
@@ -145,61 +145,55 @@ void MeOpenGl::loadDataPlane()
 	
 	//GLshort indices[] = { 0, 1, 2 };
 	
-	glGenBuffers(1, &vertexBufferID);
-	glGenBuffers(1, &indexBufferID);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	//Changes for the AO and Diffuse
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, shape.vertexBufferSize(), shape.verts, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-	//Chagnes for the AO and Diffuse
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, shape.indexBufferSize(), shape.indices, GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(0);
-	//Chagnes for the AO and Diffuse
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);  //This explains the data to the shader
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 
-		sizeof(Vertex), //Stride
-		(void*)(7 * sizeof(float)));//offset
 
-	numIndices = shape.numIndices;
-	shape.cleanup();
+	//torus
+	ShapeData torus = ShapeGenerator::makeTorus(50);
+
+	glGenBuffers(1, &torusVertexBufferID);
+	glGenBuffers(1, &torusIndexBufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, torusVertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, torus.vertexBufferSize(), torus.verts, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, torusIndexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, torus.indexBufferSize(), torus.indices, GL_STATIC_DRAW);
+
+	torusNumIndices = torus.numIndices;
+	torus.cleanup();
+
+	//shpere
+	ShapeData sphere = ShapeGenerator::makeSphere(50);
+
+	glGenBuffers(1, &sphereVertexBufferID);
+	glGenBuffers(1, &sphereIndexBufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, sphereVertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, sphere.vertexBufferSize(), sphere.verts, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereIndexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.indexBufferSize(), sphere.indices, GL_STATIC_DRAW);
+
+	sphereNumIndices = sphere.numIndices;
+	sphere.cleanup();
+
+	//plane
+	ShapeData plane = ShapeGenerator::makePlane(10);
+
+	glGenBuffers(1, &planeVertexBufferID);
+	glGenBuffers(1, &planeIndexBufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, plane.vertexBufferSize(), plane.verts, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIndexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, plane.indexBufferSize(), plane.indices, GL_STATIC_DRAW);
+
+	planeNumIndices = plane.numIndices;
+	plane.cleanup();
 
 	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
 	myTimer.start(100);
 };
-
-/*void MeOpenGl::loadDataSphere()
-{
-	ShapeData sphere = ShapeGenerator::makePlane(10);
-
-	
-
-	glGenBuffers(1, &vertexBufferID);
-	glGenBuffers(1, &indexBufferID);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	
-	glBufferData(GL_ARRAY_BUFFER, sphere.vertexBufferSize(), sphere.verts, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.indexBufferSize(), sphere.indices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
-	numIndices = sphere.numIndices;
-	sphere.cleanup();
-
-	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
-	myTimer.start(100);
-};*/
 
 bool checkStatus(
 	GLuint objectID,
@@ -344,7 +338,7 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	glUniform4fv(ambientLightUniformLocation, 1, &ambientLight[0]);
 
 	GLint lightPositionUniformLocation = glGetUniformLocation(programID, "lightPosition");
-	glm::vec3 lightPosition(0.0f, 0.0f, 0.0f);
+	glm::vec3 lightPosition(0.0f, 2.0f, 0.0f);
 	glUniform3fv(lightPositionUniformLocation, 1, &lightPosition[0]);
 
 	GLint eyePositionWorldUniformLocation = glGetUniformLocation(programID, "eyePositionWorld");
@@ -359,11 +353,8 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	//if the angle is coming from 0 and 180 degreens to the cosine, it will hit 0 which is the darkest.
 	
 	//vector is a position off the origin
-
 	//translate will really mess with your vectors as it stretches them
-
 	//rotation will change the normals but not translate
-
 	//next assignment - plain down and drop the taurus orianted up with light hitting the side. Then put more taurus in there, put a camera in there and then put lighting in the fragment shader.
 
 
@@ -414,35 +405,76 @@ void MeOpenGl::paintGL()
 		glm::rotate(0.0f, 0.0f, 1.0f, 0.0f);*///(rotationAmount, 1.0f, 0.0f, 0.0f) * glm::rotate(rotationAmount, 0.0f, 1.0f, 0.0f);
 
 	glm::mat4 modelToWorld; // = camera.getWorldToViewMatrix(); // = translate * rotate;
-
-	glm::mat4 worldToView = camera.getWorldToViewMatrix();/*glm::lookAt(
+	glm::mat4 worldToView = camera.getWorldToViewMatrix();
+	/*glm::lookAt(
 		glm::vec3(0.0f, 1.0f, 0.0f), //eyePosition
 		glm::vec3(0.0f, 1.0f, -1.0f), //Center
 		glm::vec3(0.0f, 1.0f, 0.0f));*/ //Up direction
-
-	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 100.0f); //changed 100.0f to 1|||||5.0f
-
-																							   //glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
+	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 100.0f); //changed 100.0f to 1|||||5.0f																						   //glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
 	glm::mat4 modelToProjectionMatrix; // = perspective * camera.getWorldToViewMatrix() *modelToWorld * worldToView;// *worldToView * perspective;
 	glm::mat3 normalMatrix;
 																												//Plane
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 
+	//Torus
+	glBindBuffer(GL_ARRAY_BUFFER, torusVertexBufferID);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), //Stride
+		(void*)(7 * sizeof(float)));//offset
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, torusIndexBufferID);
+
 	//Torus 1:
-	modelToWorld = glm::translate(2.0f, 0.0f, -5.0f) * glm::rotate(90.0f, 1.0f, 0.0f, 02.0f);
+	modelToWorld = glm::translate(3.0f, 0.0f, -5.0f) * glm::rotate(90.0f, 1.0f, 0.0f, 02.0f);
 	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
 	normalMatrix = glm::mat3(modelToWorld);
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 	glUniformMatrix3fv(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, torusNumIndices, GL_UNSIGNED_SHORT, 0);
 
 	//Torus 2:
-	modelToWorld = glm::translate(-2.0f, 0.0f, -5.0f) * glm::rotate(45.0f, 1.0f, 0.0f, 0.0f);
+	modelToWorld = glm::translate(-3.0f, 0.0f, -5.0f) * glm::rotate(45.0f, 1.0f, 0.0f, 0.0f);
 	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
 	normalMatrix = glm::mat3(modelToWorld);
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 	glUniformMatrix3fv(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, torusNumIndices, GL_UNSIGNED_SHORT, 0);
+	
+	//Sphere
+	glBindBuffer(GL_ARRAY_BUFFER, sphereVertexBufferID);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), //Stride
+		(void*)(7 * sizeof(float)));//offset
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereIndexBufferID);
+
+	//sphere1
+	modelToWorld = glm::translate(0.0f, 0.0f, -5.0f) * glm::rotate(90.0f, 1.0f, 0.0f, 02.0f);
+	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
+	normalMatrix = glm::mat3(modelToWorld);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+	glUniformMatrix3fv(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
+	glDrawElements(GL_TRIANGLES, sphereNumIndices, GL_UNSIGNED_SHORT, 0);
+	
+	//Plane
+	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBufferID);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), //Stride
+		(void*)(7 * sizeof(float)));//offset
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIndexBufferID);
+
+	//Plane 1:
+	modelToWorld = glm::translate(0.0f, -5.0f, -5.0f) * glm::rotate(0.0f, 1.0f, 0.0f, 02.0f);
+	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
+	normalMatrix = glm::mat3(modelToWorld);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+	glUniformMatrix3fv(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
+	glDrawElements(GL_TRIANGLES, planeNumIndices, GL_UNSIGNED_SHORT, 0);
+
 	/*...............
 	glUniformMatrix4v(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
 	glUniformMatrix3v(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);

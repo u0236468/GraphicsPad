@@ -7,11 +7,15 @@ class MeOpenGl : public QGLWidget
 {
 	Q_OBJECT 
 
-	GLuint vertexBufferID;
-	GLuint indexBufferID;
+	GLuint torusVertexBufferID;
+	GLuint torusIndexBufferID;
+	GLuint sphereVertexBufferID;
+	GLuint sphereIndexBufferID;
+	GLuint planeVertexBufferID;
+	GLuint planeIndexBufferID;
 	GLuint programID;
 	//GLfloat rotationAmount = 0.0f;
-	uint numIndices;
+	//uint numIndices;
 	float rotationAmount;
 
 	QTimer myTimer;
