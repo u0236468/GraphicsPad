@@ -8,6 +8,6 @@ public:
 	static ShapeData makePlaneIndices(uint dimensions);
 	static ShapeData makePlane(uint dimensions);
 	static ShapeData makeSphere(uint tesselation);
-	ShapeData makeTorus(uint tesselation);
+	static ShapeData makeTorus(uint tesselation);
 };
 

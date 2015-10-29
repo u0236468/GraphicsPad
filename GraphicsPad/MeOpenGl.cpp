@@ -39,7 +39,8 @@ Camera camera;
 
 void MeOpenGl::loadDataPlane()
 {
-	ShapeData plane = ShapeGenerator::makePlane(10);
+	//ShapeData plane = ShapeGenerator::makePlane(10);
+	ShapeData shape = ShapeGenerator::makeTorus(50);
 
 	/*
 	float verts[] =
@@ -150,11 +151,11 @@ void MeOpenGl::loadDataPlane()
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	//Changes for the AO and Diffuse
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, plane.vertexBufferSize(), plane.verts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, shape.vertexBufferSize(), shape.verts, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 	//Chagnes for the AO and Diffuse
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, plane.indexBufferSize(), plane.indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, shape.indexBufferSize(), shape.indices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	//Chagnes for the AO and Diffuse
@@ -167,14 +168,14 @@ void MeOpenGl::loadDataPlane()
 		sizeof(Vertex), //Stride
 		(void*)(7 * sizeof(float)));//offset
 
-	numIndices = plane.numIndices;
-	plane.cleanup();
+	numIndices = shape.numIndices;
+	shape.cleanup();
 
 	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
 	myTimer.start(100);
 };
 
-void MeOpenGl::loadDataSphere()
+/*void MeOpenGl::loadDataSphere()
 {
 	ShapeData sphere = ShapeGenerator::makePlane(10);
 
@@ -198,7 +199,7 @@ void MeOpenGl::loadDataSphere()
 
 	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
 	myTimer.start(100);
-};
+};*/
 
 bool checkStatus(
 	GLuint objectID,
@@ -252,8 +253,6 @@ void MeOpenGl::installShaders()
 	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-	// You fill this in. You will need these functions.
-	// Helpful videos in that playlist: #16 and #17
 	const char* adapter[1];
 	string temp = readShaderCode("VertexShaderCode.glsl");
 	adapter[0] = temp.c_str();
@@ -300,9 +299,9 @@ void MeOpenGl::installShaders()
 
 void MeOpenGl::sendDownUniform(float rotationAmount)
 {
-	GLuint uniformLocation = glGetUniformLocation(programID, "modelToProjectionMatrix");
+	//GLuint uniformLocation = glGetUniformLocation(programID, "modelToProjectionMatrix");
 
-	glm::mat4 translate = glm::translate(0.0f, 0.0f, 0.0f);
+	/*glm::mat4 translate = glm::translate(0.0f, 0.0f, 0.0f);
 	
 	rotationAmount += 1.0f;
 	//glm::mat4 modelToWorld = glm::scale(0.5f, 1.0f, 1.0f) * 
@@ -314,41 +313,43 @@ void MeOpenGl::sendDownUniform(float rotationAmount)
 	
 	glm::mat4 modelToWorld = translate * rotate;
 
-	/*glm::mat4 worldToView = glm::lookAt(
-		glm::vec3(5.0f, 3.0f, 0.0f), //eyePosition
-		glm::vec3(0.0f, 0.0f, -5.0f), //Center
-		glm::vec3(0.0f, 1.0f, 0.0f)); //Up direction*/
 	glm::mat4 worldToView = glm::lookAt(
-		glm::vec3(0.0f, 1.0f, 0.0f), 
-		glm::vec3(0.0f, 1.0f, -1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::vec3(0.0f, 1.0f, 0.0f), //eyePosition
+		glm::vec3(0.0f, 1.0f, -1.0f), //Center
+		glm::vec3(0.0f, 1.0f, 0.0f)); //Up direction
 
 	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 15.0f); //changed 100.0f to 1|||||5.0f
 
 	//glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
 	glm::mat4 modelToProjectionMatrix = perspective * camera.getWorldToViewMatrix() *modelToWorld * worldToView;// *worldToView * perspective;
-		
-		/*glm::lookAt(
-		glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, -1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));*/
+	
+	//Plane
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+
+	//Torus 1:
+	modelToWorld = glm::translate(-5.0f, 0.0f, 0.0f);
+	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);*/
+
+	//Torus 2:
+	//modelToWorld = glm::translate(-2.0f, 0.0f, 0.0f);
 
 	//GLint location = glGetUniformLocation(programID, "modelToProjectionMatrix");
 
 	//glUniformMatrix4fv(location, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
-	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+	
 
 	GLint ambientLightUniformLocation = glGetUniformLocation(programID, "ambientLight");
-	glm::vec4 ambientLight(0.2f, 0.2f, 0.2f, 1.0f);
+	glm::vec4 ambientLight(0.1f, 0.1f, 0.1f, 1.0f);
 	glUniform4fv(ambientLightUniformLocation, 1, &ambientLight[0]);
 
-	GLint eyePositionWorldUniformLocation = glGetUniformLocation(programID, "eyePositionWorld");
-	glm::vec3 eyePosition = camera.position;
-	glUniform3fv(eyePositionWorldUniformLocation, 1, &eyePosition[0]);
-
 	GLint lightPositionUniformLocation = glGetUniformLocation(programID, "lightPosition");
-	glm::vec3 lightPosition(0.0f, 0.3, 0.0f);
+	glm::vec3 lightPosition(0.0f, 0.0f, 0.0f);
 	glUniform3fv(lightPositionUniformLocation, 1, &lightPosition[0]);
+
+	GLint eyePositionWorldUniformLocation = glGetUniformLocation(programID, "eyePositionWorld");
+	glm::vec3 eyePositionWorld = camera.position;
+	glUniform3fv(eyePositionWorldUniformLocation, 1, &eyePositionWorld[0]);
 
 	//glm::mat4 translate = glm::translate(0.0f, 0.0f, -5.0f);
 	//glm::mat4 rotate = glm::rotate(45.0f, 1.0f, 0.0f) * glm::rotate(45.0f, 1.0f, 0.0f); //rotate 45 degrees around the x, then the Y
@@ -383,7 +384,7 @@ void MeOpenGl::initializeGL()
 		return;
 	installShaders();
 	loadDataPlane();
-	loadDataSphere();
+	//loadDataSphere();
 	//sendDownUniform();
 
 	glEnable(GL_DEPTH_TEST);
@@ -395,11 +396,66 @@ void MeOpenGl::initializeGL()
 
 void MeOpenGl::paintGL()
 {
-	//plane
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, width(), height());
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+	GLuint uniformLocation = glGetUniformLocation(programID, "modelToProjectionMatrix");
+	GLuint normalUniformLocation = glGetUniformLocation(programID, "normalMatrix");
+
+	/*glm::mat4 translate = glm::translate(0.0f, 0.0f, 0.0f);
+
+	//rotationAmount += 1.0f;
+	//glm::mat4 modelToWorld = glm::scale(0.5f, 1.0f, 1.0f) * 
+	glm::mat4 rotate = glm::rotate(0.0f, //angle
+		1.0f, //x axis
+		0.0f, //y axis set to 1 if you want to rotation on this axis
+		0.0f) * //z axis
+		glm::rotate(0.0f, 0.0f, 1.0f, 0.0f);*///(rotationAmount, 1.0f, 0.0f, 0.0f) * glm::rotate(rotationAmount, 0.0f, 1.0f, 0.0f);
+
+	glm::mat4 modelToWorld; // = camera.getWorldToViewMatrix(); // = translate * rotate;
+
+	glm::mat4 worldToView = camera.getWorldToViewMatrix();/*glm::lookAt(
+		glm::vec3(0.0f, 1.0f, 0.0f), //eyePosition
+		glm::vec3(0.0f, 1.0f, -1.0f), //Center
+		glm::vec3(0.0f, 1.0f, 0.0f));*/ //Up direction
+
+	glm::mat4 perspective = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 100.0f); //changed 100.0f to 1|||||5.0f
+
+																							   //glm::mat4 modelToProjectionMatrix = modelToWorld * worldToView * viewToProjection;
+	glm::mat4 modelToProjectionMatrix; // = perspective * camera.getWorldToViewMatrix() *modelToWorld * worldToView;// *worldToView * perspective;
+	glm::mat3 normalMatrix;
+																												//Plane
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+
+	//Torus 1:
+	modelToWorld = glm::translate(2.0f, 0.0f, -5.0f) * glm::rotate(90.0f, 1.0f, 0.0f, 02.0f);
+	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
+	normalMatrix = glm::mat3(modelToWorld);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+	glUniformMatrix3fv(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+
+	//Torus 2:
+	modelToWorld = glm::translate(-2.0f, 0.0f, -5.0f) * glm::rotate(45.0f, 1.0f, 0.0f, 0.0f);
+	modelToProjectionMatrix = perspective* worldToView * modelToWorld;
+	normalMatrix = glm::mat3(modelToWorld);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+	glUniformMatrix3fv(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+	/*...............
+	glUniformMatrix4v(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+	glUniformMatrix3v(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
+	glDraw....
+	..............*/
+	//then do next torus
+
+	//plane
+
+	//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+
+	//Torus1
+	//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0); // there are 6 indices for one side of the cube, 3 for each triabngle
 	/*glm::vec3 lightPositionWorld(0.0f, 2.0f, 0.0f);
 
 	mat4 modelToProjectionMatrix;
@@ -410,7 +466,7 @@ void MeOpenGl::paintGL()
 	GLint modelToWorldTransformMatrixUniformLocation =
 		glGetUniformLocation(programID, "modelToWorldMatrix");*/
 
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0); // there are 6 indices for one side of the cube, 3 for each triabngle
+	
 
 }
 
