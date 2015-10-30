@@ -18,7 +18,7 @@ Original Code by Jamie King
 #include "Camera.h"
 
 using namespace std;
-using glm::vec3;
+using glm::vec3;*
 using glm::vec4;
 using glm::mat4;
 
@@ -480,12 +480,6 @@ void MeOpenGl::paintGL()
 	glUniformMatrix3v(normalUniformLocation, 1, GL_FALSE, &normalMatrix[0][0]);
 	glDraw....
 	..............*/
-	//then do next torus
-
-	//plane
-
-	//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
-
 	//Torus1
 	//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0); // there are 6 indices for one side of the cube, 3 for each triabngle
 	/*glm::vec3 lightPositionWorld(0.0f, 2.0f, 0.0f);
