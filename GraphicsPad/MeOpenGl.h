@@ -13,6 +13,8 @@ class MeOpenGl : public QGLWidget
 	GLuint sphereIndexBufferID;
 	GLuint planeVertexBufferID;
 	GLuint planeIndexBufferID;
+	GLuint textureVertexBufferID;
+	GLuint textureIndexBufferID;
 	GLuint programID;
 	//GLfloat rotationAmount = 0.0f;
 	//uint numIndices;
@@ -24,6 +26,7 @@ class MeOpenGl : public QGLWidget
 	//void loadDataSphere();
 	void installShaders();
 	void sendDownUniform(float rotationAmount);
+	void loadTexture();
 
 protected:
 	void initializeGL();

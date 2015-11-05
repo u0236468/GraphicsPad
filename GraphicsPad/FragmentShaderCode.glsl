@@ -3,10 +3,12 @@
 out vec4 daColor;
 in vec3 normalWorld;
 in vec3 vertexPositionWorld;
+in vec2 daUV;
 
 uniform vec3 lightPosition;
 uniform vec3 eyePositionWorld;
 uniform vec4 ambientLight;
+uniform sampler2D meTexture;
 
 void main()
 {
@@ -22,7 +24,7 @@ void main()
 	s = pow(s,32);
 	vec4 specularLight = vec4(0, 0, s, 1);
 	
-	daColor =  ambientLight + specularLight + diffuseLight;
+	daColor =  texture(meTexture, daUV) + ambientLight + specularLight + diffuseLight;
 		 //clamp just limits it between 1-0 so the angle is not more than 90 so it doens't go negative and goes black
 		 //daColor = clamp(specularLight, 0, 1);
 		 //before specular -> daColor = vec4(brightness, brightness, brightness, 1.0); //channels and 1 for alpha(no transparency) 

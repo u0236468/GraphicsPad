@@ -33,4 +33,8 @@
     <None Include="FragmentShaderPassThroughCode.glsl" />
     <None Include="VertexShaderPassThroughCode.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Image.png" />
+    <Image Include="brick.png" />
+  </ItemGroup>
 </Project>

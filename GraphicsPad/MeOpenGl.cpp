@@ -18,7 +18,7 @@ Original Code by Jamie King
 #include "Camera.h"
 
 using namespace std;
-using glm::vec3;*
+using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
@@ -29,6 +29,7 @@ GLuint programID;
 GLuint planeNumIndices;
 GLuint sphereNumIndices;
 GLuint torusNumIndices;
+GLuint numIndices;
 Camera camera;
 //GLuint passThroughProgramID;
 
@@ -141,7 +142,25 @@ void MeOpenGl::loadDataPlane()
 	glGenBuffers(1, &indexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
-	
+float verts[] =
+{
+	-1.0f, -1.0f,
+	+0.0f, +0.0f,
+
+	+1.0f, -1.0f,
+	+1.0f, +0.0f,
+
+	+1.0f, +1.0f,
+	+1.0f, +1.0f,
+
+	-1.0f, +1.0f,
+	+0.0f, +1.0f,
+};
+
+GLushort indices[] = {
+	0,1,2,
+	2,3,0
+};
 	
 	//GLshort indices[] = { 0, 1, 2 };
 	
@@ -149,6 +168,17 @@ void MeOpenGl::loadDataPlane()
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
+	//textures
+	glGenBuffers(1, &textureVertexBufferID);
+	glGenBuffers(1, &textureIndexBufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, textureVertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, textureIndexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	numIndices = 6;
+	
 	//torus
 	ShapeData torus = ShapeGenerator::makeTorus(50);
 
@@ -191,8 +221,8 @@ void MeOpenGl::loadDataPlane()
 	planeNumIndices = plane.numIndices;
 	plane.cleanup();
 
-	connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
-	myTimer.start(100);
+	//connect(&myTimer, SIGNAL(timeout()), this, SLOT(myUpdate()));
+	//myTimer.start(100);
 };
 
 bool checkStatus(
@@ -367,6 +397,24 @@ void MeOpenGl::myUpdate()
 	repaint();
 }
 
+void MeOpenGl::loadTexture()
+{
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	
+	QImage myTexture = QGLWidget::convertToGLFormat(QImage("brick.png", "PNG"));
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexture.width(), myTexture.height(), 
+		0, GL_RGBA, GL_UNSIGNED_BYTE, myTexture.bits());
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	GLint textureUniformLocation = glGetUniformLocation(programID, "meTexture");
+	glUniform1i(textureUniformLocation, 0);
+}
+
 void MeOpenGl::initializeGL()
 {
 	QGLWidget::initializeGL();
@@ -375,6 +423,7 @@ void MeOpenGl::initializeGL()
 		return;
 	installShaders();
 	loadDataPlane();
+	loadTexture();
 	//loadDataSphere();
 	//sendDownUniform();
 
@@ -387,6 +436,9 @@ void MeOpenGl::initializeGL()
 
 void MeOpenGl::paintGL()
 {
+
+
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, width(), height());
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -415,8 +467,8 @@ void MeOpenGl::paintGL()
 	glm::mat3 normalMatrix;
 																												//Plane
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
-
-	//Torus
+	
+	//torus
 	glBindBuffer(GL_ARRAY_BUFFER, torusVertexBufferID);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
@@ -424,6 +476,15 @@ void MeOpenGl::paintGL()
 		sizeof(Vertex), //Stride
 		(void*)(7 * sizeof(float)));//offset
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, torusIndexBufferID);
+
+	//textures
+	glBindBuffer(GL_ARRAY_BUFFER, textureVertexBufferID);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
+		4 * sizeof(float), //Stride
+		(void*)(2 * sizeof(float)));//offset
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, textureIndexBufferID);
 
 	//Torus 1:
 	modelToWorld = glm::translate(3.0f, 0.0f, -5.0f) * glm::rotate(90.0f, 1.0f, 0.0f, 02.0f);

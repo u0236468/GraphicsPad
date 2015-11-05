@@ -1,17 +1,9 @@
-﻿Build started 10/29/2015 6:14:43 PM.
+﻿Build started 11/5/2015 1:11:44 PM.
      1>Project "E:\GraphicsPad\GraphicsPad\GraphicsPad.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /IE:\GraphicsPad\Middleware\Qt\include /IE:\GraphicsPad\Middleware\glew\include /IE:\GraphicsPad\Middleware\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt MeOpenGl.cpp
-         MeOpenGl.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\GraphicsPad\Debug\GraphicsPad.exe" /INCREMENTAL /NOLOGO /LIBPATH:E:\GraphicsPad\Middleware\Qt\lib /LIBPATH:E:\GraphicsPad\Middleware\glew\lib opengl32.lib glew32.lib Qtcored4.lib Qtguid4.lib Qtopengld4.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"E:\GraphicsPad\Debug\GraphicsPad.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\GraphicsPad\Debug\GraphicsPad.lib" /MACHINE:X86 Debug\Camera.obj
-         Debug\Mainer.obj
-         Debug\MeOpenGl.obj
-         Debug\MeOpenGl_moc.obj
-         Debug\ShapeGenerator.obj
+     1>Link:
          GraphicsPad.vcxproj -> E:\GraphicsPad\Debug\GraphicsPad.exe
      1>Done Building Project "E:\GraphicsPad\GraphicsPad\GraphicsPad.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.18
+Time Elapsed 00:00:00.03
