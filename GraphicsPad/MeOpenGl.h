@@ -15,6 +15,8 @@ class MeOpenGl : public QGLWidget
 	GLuint planeIndexBufferID;
 	GLuint textureVertexBufferID;
 	GLuint textureIndexBufferID;
+	GLuint vertexBufferID;
+	GLuint indexBufferID;
 	GLuint programID;
 	//GLfloat rotationAmount = 0.0f;
 	//uint numIndices;

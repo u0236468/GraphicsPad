@@ -146,6 +146,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugGuiManager.cpp" />
+    <ClCompile Include="DebugGuiManager_moc.cpp" />
+    <ClCompile Include="DebugSlider.cpp" />
+    <ClCompile Include="DebugSlider_moc.cpp" />
     <ClCompile Include="Mainer.cpp" />
     <ClCompile Include="MeOpenGl.cpp" />
     <ClCompile Include="MeOpenGl_moc.cpp" />
@@ -153,9 +157,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugGuiManager.h" />
+    <ClInclude Include="DebugSlider.h" />
+    <ClInclude Include="FastDelegate.h" />
     <ClInclude Include="MeOpenGl.h" />
     <ClInclude Include="ShapeData.h" />
     <ClInclude Include="ShapeGenerator.h" />
+    <ClInclude Include="TeapotData.h" />
+    <ClInclude Include="TypeDefs.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShaderCode.glsl" />

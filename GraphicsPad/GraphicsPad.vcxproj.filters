@@ -12,6 +12,10 @@
     <ClCompile Include="MeOpenGl_moc.cpp" />
     <ClCompile Include="ShapeGenerator.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugGuiManager.cpp" />
+    <ClCompile Include="DebugGuiManager_moc.cpp" />
+    <ClCompile Include="DebugSlider.cpp" />
+    <ClCompile Include="DebugSlider_moc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeOpenGl.h">
@@ -24,6 +28,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugGuiManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugSlider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FastDelegate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TeapotData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

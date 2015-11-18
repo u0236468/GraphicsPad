@@ -1,38 +1,73 @@
 #pragma once
-#include <glm\glm.hpp>
-typedef unsigned int uint;
-typedef unsigned short ushort;
+#include "Vertex.h"
+#include "TypeDefs.h"
 
-struct Vertex
+template<class TVert>
+struct ShapeDataTemplate
 {
-	//10 floats
-	glm::vec3 position;
-	glm::vec4 color;
-	glm::vec3 normal;
+	TVert* verts;
+	uint numVerts;
+	ushort* indices;
+	uint numIndices;
+	char* textureFileName;
+	char* normalMapFileName;
+	char* underlyingBuffer;
+
+	inline ShapeDataTemplate();
+	inline uint vertexBufferSize() const;
+	inline uint indexBufferSize() const;
+	inline uint totalBufferSize() const;
+	inline void cleanUp();
+	inline bool isValid();
 };
 
-struct ShapeData
+typedef ShapeDataTemplate<VertexPCNUT> ShapeData;
+typedef ShapeDataTemplate<VertexPNUT> ShapeDataPnut;
+typedef ShapeDataTemplate<VertexPC> ShapeDataPc;
+
+
+template<class TVert>
+ShapeDataTemplate<TVert>::ShapeDataTemplate() :
+	verts(0), numVerts(0), indices(0), numIndices(0),
+	textureFileName(0), normalMapFileName(0), underlyingBuffer(0) {}
+
+template<class TVert>
+uint ShapeDataTemplate<TVert>::vertexBufferSize() const { return numVerts * sizeof(TVert); }
+
+template<class TVert>
+uint ShapeDataTemplate<TVert>::indexBufferSize() const { return numIndices * sizeof(ushort); }
+
+template<class TVert>
+uint ShapeDataTemplate<TVert>::totalBufferSize() const
 {
-	uint numVerts;
-	Vertex* verts;
-	uint numIndices;
-	ushort* indices;
+	return vertexBufferSize() + indexBufferSize();
+}
 
-	uint vertexBufferSize() const
+template<class TVert>
+bool ShapeDataTemplate<TVert>::isValid()
+{
+	return underlyingBuffer != 0 || (verts != 0 && indices != 0);
+}
+
+template<class TVert>
+void ShapeDataTemplate<TVert>::cleanUp()
+{
+	if (underlyingBuffer != 0)
 	{
-		return numVerts * sizeof(Vertex);
+		delete[] underlyingBuffer;
 	}
-
-	uint indexBufferSize() const
-	{
-		return numIndices * sizeof(ushort);
-	}
-
-	void cleanup()
+	else
 	{
 		delete[] verts;
 		delete[] indices;
-		verts = 0;
-		indices = 0;
 	}
-};
+	if (textureFileName != NULL)
+	{
+		delete[] textureFileName;
+		textureFileName = 0;
+	}
+	numVerts = numIndices = 0;
+	verts = 0;
+	indices = 0;
+}
+
